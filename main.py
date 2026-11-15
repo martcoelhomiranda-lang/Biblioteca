@@ -1,16 +1,17 @@
-# This is a sample Python script.
+import os
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+from model.Biblioteca import Biblioteca
 
 
-# Press the green button in the gutter to run the script.
+def principal():
+    # pasta do main.py: os .txt ficam junto dele
+    pasta = os.path.dirname(os.path.abspath(__file__))
+    biblioteca = Biblioteca(pasta)
+    biblioteca.carregarDados()
+
+    # TODO (front): pedir login e senha e chamar biblioteca.autenticar(login, senha)
+    # TODO (front): se None -> "Acesso negado"; senão -> usuario.exibirMenu(biblioteca)
+
+
 if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    principal()
