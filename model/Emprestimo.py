@@ -14,20 +14,16 @@ class Emprestimo:
         self.__codigo = codigo
         self.__cliente = cliente
         self.__dataEmprestimo = dataEmprestimo
+        if renovacoes < 0 or renovacoes > Emprestimo.MAX_RENOVACOES:
+            raise ValueError(f"número de renovações inválido ({renovacoes})")
         self.__renovacoes = renovacoes
         self.__livros = []
 
     def getCodigo(self):
         return self.__codigo
 
-    def setCodigo(self, codigo):
-        self.__codigo = codigo
-
     def getCliente(self):
         return self.__cliente
-
-    def setCliente(self, cliente):
-        self.__cliente = cliente
 
     def getDataEmprestimo(self):
         return self.__dataEmprestimo
@@ -38,13 +34,13 @@ class Emprestimo:
     def getRenovacoes(self):
         return self.__renovacoes
 
-    def setRenovacoes(self, renovacoes):
-        self.__renovacoes = renovacoes
-
     def getLivros(self):
-        return self.__livros
+        # Devolve uma CÓPIA: assim ninguém de fora burla o limite de 3 livros.
+        return list(self.__livros)
 
     def addLivro(self, livro):
+        if livro in self.__livros:
+            raise ValueError(f"livro {livro.getCodigo()} já está no empréstimo {self.__codigo}")
         if len(self.__livros) >= Emprestimo.MAX_LIVROS:
             raise ValueError(f"empréstimo {self.__codigo} já tem {Emprestimo.MAX_LIVROS} livros")
         self.__livros.append(livro)

@@ -9,8 +9,17 @@ def principal():
     biblioteca = Biblioteca(pasta)
     biblioteca.carregarDados()
 
-    # TODO (front): pedir login e senha e chamar biblioteca.autenticar(login, senha)
-    # TODO (front): se None -> "Acesso negado"; senão -> usuario.exibirMenu(biblioteca)
+    login = input("\nLogin: ").strip()
+    senha = input("Senha: ").strip()
+
+    usuario = biblioteca.autenticar(login, senha)
+    if usuario is None:
+        print("Acesso negado.")
+        return
+
+    print(f"\nBem-vindo(a), {usuario.getNome()}!")
+    # Polimorfismo: a mesma mensagem, comportamento diferente por tipo de usuário.
+    usuario.exibirMenu(biblioteca)
 
 
 if __name__ == '__main__':

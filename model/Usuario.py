@@ -1,17 +1,18 @@
 from abc import ABC, abstractmethod
+
+
 class Usuario(ABC):
-    """Classe abstrata: base para Cliente e Bibliotecario"""
+    """Classe abstrata: base para Cliente e Bibliotecario."""
+
     def __init__(self, codigo, nome, login, senha):
         self.__codigo = codigo
         self.__nome = nome
         self.__login = login
         self.__senha = senha
 
+    # O código é a IDENTIDADE do objeto: não tem setter (ver explicação).
     def getCodigo(self):
         return self.__codigo
-
-    def setCodigo(self, codigo):
-        self.__codigo = codigo
 
     def getNome(self):
         return self.__nome
@@ -19,15 +20,16 @@ class Usuario(ABC):
     def setNome(self, nome):
         self.__nome = nome
 
-    def getSenha(self):
-        return self.__senha
+    def getLogin(self):
+        return self.__login
 
+    # A senha só pode ser trocada ou conferida, nunca lida de fora.
     def setSenha(self, senha):
         self.__senha = senha
 
     def validarAcesso(self, login, senha):
-        """Retorna True se login e senha conferem"""
-        return self.__login==login and self.__senha==senha
+        """Retorna True se login e senha conferem."""
+        return self.__login == login and self.__senha == senha
 
     @abstractmethod
     def getTipo(self):

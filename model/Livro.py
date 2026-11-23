@@ -8,9 +8,6 @@ class Livro:
     def getCodigo(self):
         return self.__codigo
 
-    def setCodigo(self, codigo):
-        self.__codigo = codigo
-
     def getTitulo(self):
         return self.__titulo
 

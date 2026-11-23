@@ -20,18 +20,22 @@ class Biblioteca:
         return list(self.__usuarios.values())
 
     def getLivros(self):
-        return self.__livros
+        return list(self.__livros)  # cópia: não expõe a lista interna
 
     def getEmprestimos(self):
         return list(self.__emprestimos.values())
 
     def addUsuario(self, usuario):
+        if usuario.getCodigo() in self.__usuarios:
+            raise ValueError(f"código de usuário {usuario.getCodigo()} duplicado")
         self.__usuarios[usuario.getCodigo()] = usuario
 
     def removeUsuario(self, usuario):
         self.__usuarios.pop(usuario.getCodigo(), None)
 
     def addLivro(self, livro):
+        if self.buscarLivro(livro.getCodigo()) is not None:
+            raise ValueError(f"código de livro {livro.getCodigo()} duplicado")
         self.__livros.append(livro)
 
     def removeLivro(self, livro):
@@ -52,6 +56,10 @@ class Biblioteca:
 
     def buscarEmprestimo(self, codigo):
         return self.__emprestimos.get(codigo)
+
+    def livroEmprestado(self, livro):
+        """True se o livro já está em algum empréstimo (não está disponível)."""
+        return any(livro in e.getLivros() for e in self.__emprestimos.values())
 
     def getEmprestimosDoCliente(self, cliente):
         """Só os empréstimos do cliente informado."""
@@ -79,8 +87,8 @@ class Biblioteca:
                         linhas.append((numero, campos))
         except FileNotFoundError:
             print(f"   ERRO: arquivo '{nomeArquivo}' não encontrado.")
-        finally:
-            print(f"   {nomeArquivo}: {len(linhas)} linha(s) lida(s)")
+            return linhas
+        print(f"   {nomeArquivo}: {len(linhas)} linha(s) lida(s)")
         return linhas
 
     def __avisoLinha(self, nomeArquivo, numero, erro):
@@ -125,10 +133,15 @@ class Biblioteca:
                 if livro is None:
                     raise ValueError(f"livro {codLivro} não existe")
 
+                if self.livroEmprestado(livro):
+                    raise ValueError(f"livro {codLivro} já está emprestado")
+
                 # 1ª linha desse código: cria o empréstimo; nas demais, só adiciona o livro
-                if codigo not in self.__emprestimos:
-                    self.addEmprestimo(Emprestimo(codigo, cliente, data, renovacoes))
-                self.__emprestimos[codigo].addLivro(livro)
+                emprestimo = self.__emprestimos.get(codigo)
+                if emprestimo is None:
+                    emprestimo = Emprestimo(codigo, cliente, data, renovacoes)
+                emprestimo.addLivro(livro)  # se falhar, nada foi registrado
+                self.__emprestimos[codigo] = emprestimo
             except ValueError as erro:
                 self.__avisoLinha("emprestimos.txt", numero, erro)
 
